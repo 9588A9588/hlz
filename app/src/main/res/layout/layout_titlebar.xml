@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_titlebar"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:layout_weight="1"
+    android:background="#ed4255"
+    android:orientation="horizontal"
+    android:paddingBottom="8dp">
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.8"
+        android:orientation="horizontal">
+    <Button
+        android:id="@+id/button_backward"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_weight="0.8"
+        android:background="@drawable/title_button_selector"
+        android:drawableLeft="@drawable/back_arrow"
+        android:layout_alignParentLeft="true"
+        android:drawablePadding="6dp"
+        android:layout_marginLeft="5dp"
+        android:gravity="center"
+        android:onClick="onClick"
+        android:singleLine="true"
+        android:text="返回"
+        android:textColor="#ffffffff"
+        android:textSize="10dp"
+        android:visibility="invisible" />
+</RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_weight="1"
+        android:src="@mipmap/title_bg1" />
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.8"
+        android:ellipsize="marquee"
+        android:gravity="center_horizontal|center"
+        android:singleLine="true"
+        android:text="标题栏"
+        android:textColor="#ffffffff"
+        android:textSize="16dp" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:src="@mipmap/title_bg2" />
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.8"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_forward"
+            android:layout_width="48dp"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/title_button_selector"
+            android:drawableLeft="@drawable/back_arrow"
+            android:drawablePadding="6dp"
+            android:onClick="onClick"
+            android:singleLine="true"
+            android:text="提交"
+            android:textColor="#ffffffff"
+            android:textSize="10dp"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+</LinearLayout>

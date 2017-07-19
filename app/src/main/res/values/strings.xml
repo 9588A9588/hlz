@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">小肥羊</string>
+    <string name="im1">会员卡</string>
+    <string name="im2">扫一扫</string>
+    <string name="im3">优惠券</string>
+    <string name="im4">兑换码</string>
+    <string name="im5">激活卡</string>
+    <string name="im6">充值余额</string>
+    <string name="im7">附近门店</string>
+    <string name="im8">预选菜单</string>
+    <string name="im9">积分商城</string>
+    <string name="im10">查看更多</string>
+    <string name="gps_button">位置</string>
+    <string name="call_button">联系我们</string>
+    <string name="main_tab_name_primary">首页</string>
+    <string name="main_tab_name_category">消息</string>
+    <string name="main_tab_name_cart">活动</string>
+    <string name="main_tab_name_user">我的</string>
+    <string name="action_settings">Settings</string>
+    <string name="scan_text">将二维码放入框内, 即可自动扫描</string>
+</resources>
