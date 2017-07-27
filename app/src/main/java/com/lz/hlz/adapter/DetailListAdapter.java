@@ -54,6 +54,8 @@ public class DetailListAdapter extends BaseAdapter {
         int p = position;
         if (p == 0)
             return TYPE_1;
+        else if(p==1)
+            return TYPE_2;
         else
             return TYPE_2;
     }

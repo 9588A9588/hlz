@@ -174,7 +174,7 @@ public class Web_Activity extends TitleActivity {
             webView.goBack();
             return true;
         }
-        System.exit(0);
+        finish();
         return super.onKeyDown(keyCode, event);
     }
 

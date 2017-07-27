@@ -24,6 +24,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -49,6 +51,13 @@ public class TitleActivity extends AppCompatActivity implements OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupViews();   //加载 activity_title 布局 ，并获取标题及两侧按钮
+        //沉浸式风格  需要先修改values/styles/AppTheme为Theme.AppCompat.LightNoActionBar（隐藏标题）
+        Window window = getWindow();
+        window.setFlags(
+                //透明状态栏
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                //透明导航栏
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }
 
 

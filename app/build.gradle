@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'hlz'
+            keyPassword 'tongbo110'
+            storeFile file('H:/key/k.jks')
+            storePassword 'tongbo110'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion '25.0.0'
     defaultConfig {
@@ -15,16 +23,19 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
-
+        debug {
+            signingConfig signingConfigs.config
+        }
     }
-
     sourceSets {
         main {
             res.srcDirs = ['src/main/res/layout/verticalmarquee',
                            'src/main/res/layout',
                            'src/main/res'
             ]
+            jniLibs.srcDirs = ['libs']
         }
     }
 }
@@ -46,4 +57,5 @@ dependencies {
     compile 'com.android.support:support-v4:23.4.0'
     compile files('libs/zxing.jar')
     testCompile 'junit:junit:4.12'
+    compile files('libs/AMap3DMap_5.2.1_AMapNavi_5.2.1_AMapSearch_5.2.1_AMapLocation_3.4.1_20170710.jar')
 }

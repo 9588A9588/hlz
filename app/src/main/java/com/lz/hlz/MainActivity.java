@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -18,18 +20,29 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
+import com.amap.api.services.core.LatLonPoint;
 import com.lz.hlz.fragment.NavFragment;
 import com.lz.hlz.fragment.NavigationButton;
 import com.lz.hlz.interf.OnTabReselectListener;
+import com.lz.hlz.util.map.Utils;
 import com.lz.hlz.widget.TitleActivity;
 
 import kr.co.namee.permissiongen.PermissionGen;
 
 
-public class MainActivity extends TitleActivity implements NavFragment.OnNavigationReselectListener {
+public class MainActivity extends TitleActivity implements NavFragment.OnNavigationReselectListener, AMapLocationListener {
     private Button mBackwardbButton;
     private Button mForwardButton;
     private NavFragment mNavBar;
+    private String[] strMsg;
+    private double x = 0.0;
+    private double y = 0.0;
+    private AMapLocationClient locationClient = null;
+    private AMapLocationClientOption locationOption = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +56,12 @@ public class MainActivity extends TitleActivity implements NavFragment.OnNavigat
                         Manifest.permission.CAMERA,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
+                        Manifest.permission.ACCESS_NETWORK_STATE,
+                        Manifest.permission.ACCESS_WIFI_STATE,
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.RECORD_AUDIO)
                 .request();
         mBackwardbButton = (Button) findViewById(R.id.button_backward);
@@ -57,20 +76,12 @@ public class MainActivity extends TitleActivity implements NavFragment.OnNavigat
         mBackwardbButton.setCompoundDrawables(null, drawable, null, null);  //设置按钮上下左右图片
         mForwardButton.setCompoundDrawables(null, drawable2, null, null);  //设置按钮上下左右图片
 //        mBackwardbButton.setBackgroundResource(R.drawable.gps); //设置按钮图片
-        //沉浸式风格  需要先修改values/styles/AppTheme为Theme.AppCompat.LightNoActionBar（隐藏标题）
-        Window window = getWindow();
-        window.setFlags(
-                //透明状态栏
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                //透明导航栏
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
         FragmentManager manager = getSupportFragmentManager();
         mNavBar = ((NavFragment) manager.findFragmentById(R.id.fag_nav));
         mNavBar.setup(this, manager, R.id.main_container, this);
 //        ScrollView.addHeaderView(banner);
 
-
+        Location();
     }
 
     public void onReselect(NavigationButton navigationButton) {
@@ -88,7 +99,17 @@ public class MainActivity extends TitleActivity implements NavFragment.OnNavigat
      * @param backwardView
      */
     protected void onBackward(View backwardView) {
+        if(x!=0.0&&y!=0.0){
+            Intent intent = new Intent();
+            intent.setClass(this, MapActivity.class);
+            intent.putExtra("x",x);
+            intent.putExtra("y",y);
+            this.startActivity(intent);
+        }else{
+            Toast.makeText(getApplicationContext(), "定位信号弱，暂时无法查看当前位置", Toast.LENGTH_SHORT).show();
+        }
         super.onBackward(backwardView);
+
     }
 
     /**
@@ -174,5 +195,63 @@ public class MainActivity extends TitleActivity implements NavFragment.OnNavigat
             return;
         }
         startActivity(intent);//调用上面这个intent实现拨号
+    }
+
+    @Override
+    public void onLocationChanged(AMapLocation loc) {
+        if (null != loc) {
+            Message msg = mHandler.obtainMessage();
+            msg.obj = loc;
+            msg.what = Utils.MSG_LOCATION_FINISH;
+            mHandler.sendMessage(msg);
+        }
+
+    }
+
+    Handler mHandler = new Handler() {
+        public void dispatchMessage(android.os.Message msg) {
+            switch (msg.what) {
+                //定位完成
+                case Utils.MSG_LOCATION_FINISH:
+                    String result = "";
+                    try {
+                        AMapLocation loc = (AMapLocation) msg.obj;
+                        result = Utils.getLocationStr(loc, 1);
+                        strMsg = result.split(",");
+                        Toast.makeText(MainActivity.this, "定位成功", Toast.LENGTH_LONG).show();
+                        setBackButtonTitle(strMsg[3]);
+                        //    textView.setText("地址：" + strMsg[0] + "\n" + "经    度：" + strMsg[1] + "\n" + "纬    度：" + strMsg[2]);
+                        x = Double.valueOf(strMsg[2]);
+                        y = Double.valueOf(strMsg[1]);
+                    } catch (Exception e) {
+                        Toast.makeText(MainActivity.this, "定位失败", Toast.LENGTH_LONG).show();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        ;
+
+    };
+
+    public void Location() {
+        // TODO Auto-generated method stub
+        try {
+            locationClient = new AMapLocationClient(this);
+            locationOption = new AMapLocationClientOption();
+            // 设置定位模式为低功耗模式
+            locationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Battery_Saving);
+            // 设置定位监听
+            locationClient.setLocationListener(this);
+            locationOption.setOnceLocation(true);//设置为单次定位
+            locationClient.setLocationOption(locationOption);// 设置定位参数
+            // 启动定位
+            locationClient.startLocation();
+            mHandler.sendEmptyMessage(Utils.MSG_LOCATION_START);
+        } catch (Exception e) {
+            Toast.makeText(MainActivity.this, "定位失败", Toast.LENGTH_LONG).show();
+        }
     }
 }
